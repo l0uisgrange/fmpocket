@@ -1,0 +1,41 @@
+{
+    "name": "fmpocket",
+    "version": "1.0.0-alpha.1",
+    "description": "FMPocket is a universal typed dependency-free client for the Financial Modeling Prep (FMP) API, built on standard `fetch` for seamless use across Node, Deno, Bun, and the browser. Gets your financial data perfectly formatted.",
+    "author": {
+        "name": "Louis Grange",
+        "url": "https://github.com/l0uisgrange"
+    },
+    "license": "MIT",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/l0usigrange/fmpocket.git"
+    },
+    "keywords": [
+        "fmp",
+        "financial",
+        "stock",
+        "data",
+        "isomorphic",
+        "universal"
+    ],
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "clean": "rimraf dist",
+        "build": "npm run clean && tsc",
+        "check:compile": "tsc --noEmit",
+        "check:format": "prettier --check .",
+        "format": "prettier --write .",
+        "prepublishOnly": "npm run build"
+    },
+    "devDependencies": {
+        "prettier": "^3.6.2",
+        "rimraf": "^6.0.1",
+        "typescript": "^5.9.3"
+    }
+}

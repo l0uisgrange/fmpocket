@@ -1,0 +1,27 @@
+name: CI
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+jobs:
+    check:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [24]
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v5
+            - name: Set up Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v6
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Install Dependencies
+              run: npm ci
+            - name: Run Quality Checks (Format & Compile)
+              run: npm run check:compile
+            - name: Build TypeScript to JavaScript
+              run: npm run check:format
