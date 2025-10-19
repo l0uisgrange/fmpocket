@@ -80,7 +80,7 @@ export class FMPocketClient {
      */
     async batchQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchQuote.');
-        return this.#callEndpoint('/batch-quote', quoteSchema, { symbols: symbols.join('%2C') });
+        return this.#callEndpoint('/batch-quote', quoteSchema, { symbols: symbols.join(',') });
     }
 
     /**
@@ -88,7 +88,7 @@ export class FMPocketClient {
      */
     async batchShortQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchShortQuote.');
-        return this.#callEndpoint('/batch-quote-short', shortQuoteSchema, { symbols: symbols.join('%2C') });
+        return this.#callEndpoint('/batch-quote-short', shortQuoteSchema, { symbols: symbols.join(',') });
     }
 
     /**
