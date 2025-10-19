@@ -20,4 +20,4 @@ jobs:
             - name: Build package
               run: npm run build
             - name: Publish to NPM
-              run: npm publish --tag alpha
+              run: npm publish
