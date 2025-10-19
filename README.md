@@ -20,10 +20,10 @@ The constructor supports the following options.
 
 | Option | Description | Default |
 | :--- | :--- | :-- |
-| `key` (required) | Your API secret key | _None_ |
+| `key` | Your API secret key | _None_ (required) |
 | `baseUrl` | The base endpoint URL | `https://financialmodelingprep.com/` |
 | `version` | The API version | `stable` |
-| `validate` | If `true`, JSON data are validated through Zod to ensure its integrity | `true` |
+| `validate` | Validate JSON to ensure its integrity | `true` |
 
 ## Endpoints
 
