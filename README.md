@@ -39,3 +39,4 @@ This is the list of currently supported endpoints, with more to come.
 | `fullChart({ symbol, from, to })`               | `/historical-price-eod/full`   |
 | `intradayChart({ symbol, from, to, interval })` | `/historical-chart/{INTERVAL}` |
 | `search({ query, by, exchange, limit })`        | `/search-{BY}`                 |
+| `companyProfile({ cik, symbol })`               | `/profile`                     |

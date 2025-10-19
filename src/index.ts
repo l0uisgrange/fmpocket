@@ -1,5 +1,13 @@
 import { z } from 'zod';
-import { fullChartSchema, intradayChartSchema, lightChartSchema, quoteSchema, searchSchema, shortQuoteSchema } from './schemas.js';
+import {
+    companyProfileSchema,
+    fullChartSchema,
+    intradayChartSchema,
+    lightChartSchema,
+    quoteSchema,
+    searchSchema,
+    shortQuoteSchema,
+} from './schemas.js';
 import { formatDay } from './format.js';
 
 export class FMPocketClient {
@@ -74,7 +82,7 @@ export class FMPocketClient {
     }
 
     /**
-     * Retrieves the current short quotes for multiple stock/forex/crypto symbols.
+     * Retrieves the live short quotes for multiple stock/forex/crypto symbols.
      */
     async batchShortQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchShortQuote.');
@@ -141,6 +149,18 @@ export class FMPocketClient {
             limit,
             exchange,
         });
+    }
+
+    /**
+     * Retrieves the detailed information given a company's symbol.
+     */
+    async companyProfile({ cik, symbol }: { symbol: string; cik?: never } | { cik: string; symbol?: never }) {
+        if (!cik && !symbol) throw new Error('Symbol or CIK is required for companyProfile.');
+        if (cik) {
+            return this.#callEndpoint('/profile', companyProfileSchema, { symbol });
+        } else {
+            return this.#callEndpoint('/profile-cik', companyProfileSchema, { cik });
+        }
     }
 }
 
