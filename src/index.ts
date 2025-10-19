@@ -123,6 +123,6 @@ export class FMPocket {
     async batchShortQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchShortQuote.');
         if (symbols.length <= 1) return [];
-        return this.#callEndpoint('/batch-quote', z.array(singleShortQuoteSchema), { symbols: symbols.join('%2C') });
+        return this.#callEndpoint('/batch-quote-short', z.array(singleShortQuoteSchema), { symbols: symbols.join('%2C') });
     }
 }
