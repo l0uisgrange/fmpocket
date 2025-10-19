@@ -15,16 +15,18 @@ export class FMPocketClient {
     #baseUrl: string = 'https://financialmodelingprep.com/';
     #version: string = 'stable';
     #validate: boolean = true;
+    #debug: boolean = false;
 
     /**
      * Internal method to set the API key. Called by the exported setup function.
      */
-    setup({ key, baseUrl, version, validate }: FMPocketOptions) {
+    setup({ key, baseUrl, version, validate, debug }: FMPocketOptions) {
         if (!key) throw new Error('FMP_API key must be provided.');
         this.#apiKey = key;
         if (baseUrl !== undefined) this.#baseUrl = baseUrl;
         if (version !== undefined) this.#version = version;
         if (validate !== undefined) this.#validate = validate;
+        if (debug !== undefined) this.#debug = debug;
     }
 
     /**
@@ -32,12 +34,13 @@ export class FMPocketClient {
      */
     #buildUrl(endpoint: string, params: Record<string, any> = {}): string {
         const url = new URL(this.#baseUrl + this.#version + endpoint);
-        url.searchParams.append('apikey', this.#apiKey);
         for (const key in params) {
             if (params[key] !== undefined) {
                 url.searchParams.append(key, String(params[key]));
             }
         }
+        if (this.#debug) console.log('CALLING', url.href);
+        url.searchParams.append('apikey', this.#apiKey);
         return url.toString();
     }
 
@@ -77,7 +80,6 @@ export class FMPocketClient {
      */
     async batchQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchQuote.');
-        if (symbols.length <= 1) return [];
         return this.#callEndpoint('/batch-quote', quoteSchema, { symbols: symbols.join('%2C') });
     }
 
@@ -86,7 +88,6 @@ export class FMPocketClient {
      */
     async batchShortQuote(symbols: string[]) {
         if (!symbols) throw new Error('Symbol is required for getBatchShortQuote.');
-        if (symbols.length <= 1) return [];
         return this.#callEndpoint('/batch-quote-short', shortQuoteSchema, { symbols: symbols.join('%2C') });
     }
 
@@ -171,6 +172,7 @@ export interface FMPocketOptions {
     baseUrl?: string;
     version?: 'stable';
     validate?: boolean;
+    debug?: boolean;
 }
 
 export function FMPocket(params: FMPocketOptions) {
