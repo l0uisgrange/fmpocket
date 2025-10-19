@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FMPocket } from './index.js';
+import { FMPocket } from '../src/index.js';
 
 if (!process.env.VITE_TEST_KEY) throw new Error('Missing key');
 const KEY = process.env.VITE_TEST_KEY;
