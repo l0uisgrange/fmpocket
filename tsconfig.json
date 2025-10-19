@@ -6,6 +6,7 @@
         "outDir": "./dist",
         "rootDir": "./src",
         "declaration": true,
+        "moduleResolution": "nodenext",
         "forceConsistentCasingInFileNames": true,
         "strict": true
     },
