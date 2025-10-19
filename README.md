@@ -29,11 +29,13 @@ The constructor supports the following options.
 
 This is the list of currently supported endpoints, with more to come.
 
-| Method                             | API endpoint                  | Return type    |
-| :--------------------------------- | :---------------------------- | :------------- |
-| `quote(symbol)`                    | `/quote`                      | `Quote`        |
-| `shortQuote(symbol)`               | `/quote-short`                | `ShortQuote`   |
-| `batchQuote(symbols)`              | `/batch-quote`                | `Quote[]`      |
-| `batchShortQuote(symbols)`         | `/batch-quote-short`          | `ShortQuote[]` |
-| `lightChart({ symbol, from, to })` | `/historical-price-eod/light` | `LightChart[]` |
-| `fullChart({ symbol, from, to })`  | `/historical-price-eod/full`  | `FullChart[]`  |
+| Method                                          | API endpoint                   |
+| :---------------------------------------------- | :----------------------------- |
+| `quote(symbol)`                                 | `/quote`                       |
+| `shortQuote(symbol)`                            | `/quote-short`                 |
+| `batchQuote(symbols)`                           | `/batch-quote`                 |
+| `batchShortQuote(symbols)`                      | `/batch-quote-short`           |
+| `lightChart({ symbol, from, to })`              | `/historical-price-eod/light`  |
+| `fullChart({ symbol, from, to })`               | `/historical-price-eod/full`   |
+| `intradayChart({ symbol, from, to, interval })` | `/historical-chart/{INTERVAL}` |
+| `search({ query, by, exchange, limit })`        | `/search-{BY}`                 |
