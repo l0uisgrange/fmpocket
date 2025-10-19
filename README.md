@@ -29,9 +29,11 @@ The constructor supports the following options.
 
 This is the list of currently supported endpoints, with more to come.
 
-| Method                     | API endpoint         | Return type    |
-| :------------------------- | :------------------- | :------------- |
-| `quote(symbol)`            | `/quote`             | `Quote`        |
-| `shortQuote(symbol)`       | `/quote-short`       | `ShortQuote`   |
-| `batchQuote(symbols)`      | `/batch-quote`       | `Quote[]`      |
-| `batchShortQuote(symbols)` | `/batch-quote-short` | `ShortQuote[]` |
+| Method                             | API endpoint                  | Return type    |
+| :--------------------------------- | :---------------------------- | :------------- |
+| `quote(symbol)`                    | `/quote`                      | `Quote`        |
+| `shortQuote(symbol)`               | `/quote-short`                | `ShortQuote`   |
+| `batchQuote(symbols)`              | `/batch-quote`                | `Quote[]`      |
+| `batchShortQuote(symbols)`         | `/batch-quote-short`          | `ShortQuote[]` |
+| `lightChart({ symbol, from, to })` | `/historical-price-eod/light` | `LightChart[]` |
+| `fullChart({ symbol, from, to })`  | `/historical-price-eod/full`  | `FullChart[]`  |

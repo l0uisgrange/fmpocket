@@ -31,12 +31,15 @@
         "check:compile": "tsc --noEmit",
         "check:format": "prettier --check .",
         "format": "prettier --write .",
+        "test": "vitest run",
         "prepublishOnly": "npm run build"
     },
     "devDependencies": {
+        "@types/node": "^24.8.1",
         "prettier": "^3.6.2",
         "rimraf": "^6.0.1",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vitest": "^3.2.4"
     },
     "dependencies": {
         "zod": "^4.1.12"

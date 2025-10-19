@@ -1,21 +1,28 @@
 import { z } from 'zod';
-import { singleQuoteSchema, singleShortQuoteSchema, unboxedQuoteSchema, unboxedShortQuoteSchema } from './schemas.js';
+import {
+    fullChartSchema,
+    lightChartSchema,
+    singleQuoteSchema,
+    singleShortQuoteSchema,
+    unboxedQuoteSchema,
+    unboxedShortQuoteSchema,
+} from './schemas.js';
+import { formatDay } from './format.js';
 
-export class FMPocket {
-    readonly #apiKey: string;
-    readonly #baseUrl: string = 'https://financialmodelingprep.com/';
-    readonly #version: string = 'stable';
-    readonly #validate: boolean = true;
+export class FMPocketClient {
+    #apiKey: string = '';
+    #baseUrl: string = 'https://financialmodelingprep.com/';
+    #version: string = 'stable';
+    #validate: boolean = true;
 
     /**
-     * Instance of FMPocket.
+     * Internal method to set the API key. Called by the exported setup function.
      * @param key The FMP API key.
-     * @param baseUrl The FMP base url
-     * @param version The API version
-     * @param validate Active/deactivate endpoint data validation
-     * @throws {Error} If the API key is not provided.
+     * @param baseUrl
+     * @param version
+     * @param validate
      */
-    constructor({ key, baseUrl, version, validate }: { key: string; baseUrl?: string; version?: 'stable'; validate?: boolean }) {
+    setup({ key, baseUrl, version, validate }: FMPocketOptions) {
         if (!key) throw new Error('FMP_API key must be provided.');
         this.#apiKey = key;
         if (baseUrl !== undefined) this.#baseUrl = baseUrl;
@@ -41,27 +48,9 @@ export class FMPocket {
     }
 
     /**
-     * Validates raw JSON data against a Zod schema.
-     * @template T The expected data type after validation.
-     * @param data The raw JSON data to validate.
-     * @param schema The Zod schema to use for validation.
-     * @returns The validated data, typed as T.
-     * @throws {Error} If data format validation fails (ZodError).
-     */
-    #validateData<T>(data: any, schema: z.ZodSchema<T>): T {
-        try {
-            return schema.parse(data);
-        } catch (error) {
-            if (error instanceof z.ZodError) {
-                throw new Error(`Format Check Error: ${error.message}`);
-            }
-            throw error;
-        }
-    }
-
-    /**
      * Executes a generic HTTP call to the FMP API.
-     * @template T The data type
+     * @template T The data type.
+     * @template S The type of Zod's schema.
      * @param endpoint The endpoint path.
      * @param schema The data schema for validation.
      * @param params The request parameters.
@@ -72,11 +61,11 @@ export class FMPocket {
         const url = this.#buildUrl(endpoint, params);
         const response = await fetch(url);
         if (!response.ok) throw new Error(`FMPocket HTTP Error ${response.status} for ${endpoint}`);
-        const rawData = await response.json();
-        if (!this.#validate) {
-            return this.#validateData(rawData, schema);
+        const rawData: T = await response.json();
+        if (this.#validate) {
+            return schema.parse(rawData);
         } else {
-            return rawData as T;
+            return rawData;
         }
     }
 
@@ -88,7 +77,7 @@ export class FMPocket {
      */
     async quote(symbol: string) {
         if (!symbol) throw new Error('Symbol is required for getQuote.');
-        return this.#callEndpoint(`/quote`, unboxedQuoteSchema, { symbol: symbol.toUpperCase() });
+        return this.#callEndpoint(`/quote`, unboxedQuoteSchema, { symbol });
     }
 
     /**
@@ -99,7 +88,7 @@ export class FMPocket {
      */
     async shortQuote(symbol: string) {
         if (!symbol) throw new Error('Symbol is required for getShortQuote.');
-        return this.#callEndpoint(`/quote-short`, unboxedShortQuoteSchema, { symbol: symbol.toUpperCase() });
+        return this.#callEndpoint(`/quote-short`, unboxedShortQuoteSchema, { symbol });
     }
 
     /**
@@ -125,4 +114,52 @@ export class FMPocket {
         if (symbols.length <= 1) return [];
         return this.#callEndpoint('/batch-quote-short', z.array(singleShortQuoteSchema), { symbols: symbols.join('%2C') });
     }
+
+    /**
+     * Retrieves the current light chart data for a single stock/forex/crypto symbols.
+     * @param symbol The asset symbols (e.g., 'AAPL').
+     * @param from Start date.
+     * @param to End date.
+     * @returns The validated light chart data.
+     * @throws {Error} If the params or return format are incorrect.
+     */
+    async lightChart({ symbol, from, to }: { symbol: string; from: Date | string; to: Date | string }) {
+        if (!symbol) throw new Error('Symbol is required for lightChart.');
+        return this.#callEndpoint('/historical-price-eod/light', lightChartSchema, {
+            symbol,
+            from: formatDay(from),
+            to: formatDay(to),
+        });
+    }
+
+    /**
+     * Retrieves the current full chart data for a single stock/forex/crypto symbols.
+     * @param symbol The asset symbols (e.g., 'AAPL').
+     * @param from Start date.
+     * @param to End date.
+     * @returns The validated full chart data.
+     * @throws {Error} If the params or return format are incorrect.
+     */
+    async fullChart({ symbol, from, to }: { symbol: string; from: Date | string; to: Date | string }) {
+        if (!symbol) throw new Error('Symbol is required for fullChart.');
+        return this.#callEndpoint('/historical-price-eod/full', fullChartSchema, {
+            symbol,
+            from: formatDay(from),
+            to: formatDay(to),
+        });
+    }
+}
+
+const client = new FMPocketClient();
+
+export interface FMPocketOptions {
+    key: string;
+    baseUrl?: string;
+    version?: 'stable';
+    validate?: boolean;
+}
+
+export function FMPocket(params: FMPocketOptions) {
+    client.setup(params);
+    return client;
 }

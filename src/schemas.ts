@@ -38,3 +38,27 @@ export const unboxedShortQuoteSchema = z
     .min(1)
     .max(1)
     .transform((data) => data[0]);
+
+export const lightChartSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        date: z.coerce.date(),
+        price: z.number(),
+        volume: z.number().int(),
+    }),
+);
+
+export const fullChartSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        date: z.coerce.date(),
+        open: z.number(),
+        high: z.number(),
+        low: z.number(),
+        close: z.number(),
+        volume: z.number().int(),
+        change: z.number(),
+        changePercent: z.number(),
+        vwap: z.number(),
+    }),
+);
