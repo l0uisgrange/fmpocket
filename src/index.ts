@@ -157,7 +157,7 @@ export class FMPocketClient {
      */
     async companyProfile({ cik, symbol }: { symbol: string; cik?: never } | { cik: string; symbol?: never }) {
         if (!cik && !symbol) throw new Error('Symbol or CIK is required for companyProfile.');
-        if (cik) {
+        if (symbol) {
             return this.#callEndpoint('/profile', companyProfileSchema, { symbol });
         } else {
             return this.#callEndpoint('/profile-cik', companyProfileSchema, { cik });
