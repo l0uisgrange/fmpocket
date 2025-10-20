@@ -4,10 +4,37 @@ import { FMPocket } from '../src/index.js';
 if (!process.env.VITE_TEST_KEY) throw new Error('Missing key');
 const KEY = process.env.VITE_TEST_KEY;
 
+const fmpocket = FMPocket({ key: KEY, debug: true });
+
 describe('test endpoints', () => {
-    it('should correctly return a unique symbol', async () => {
-        const fmpocket = FMPocket({ key: KEY, validate: true });
+    it('quote', async () => {
         let [data] = await fmpocket.quote('MSFT');
-        expect(data.name).toBe('Apple Inc.');
+        expect(data.name).toBe('Microsoft Corporation');
+    });
+    it('batchQuote', async () => {
+        let data = await fmpocket.batchQuote(['MSFT', 'AAPL', 'EURUSD']);
+        expect(data.length).toBe(3);
+        expect(data[0].symbol).toBe('MSFT');
+    });
+    it('search', async () => {
+        let [data] = await fmpocket.search({ query: 'MSFT', by: 'symbol' });
+        expect(data.name).toBe('Microsoft Corporation');
+    });
+    it('intradayChart', async () => {
+        let [data] = await fmpocket.intradayChart({
+            symbol: 'MSFT',
+            from: new Date('2025-10-10'),
+            to: new Date('2025-10-20'),
+            interval: '4hour',
+        });
+        expect(data.volume).toBeGreaterThan(0);
+    });
+    it('fullChart', async () => {
+        let [data] = await fmpocket.fullChart({ symbol: 'USDCHF', from: new Date('2025-10-10'), to: new Date('2025-10-20') });
+        expect(data.volume).toBeGreaterThan(0);
+    });
+    it('companyProfile', async () => {
+        let [data] = await fmpocket.companyProfile({ symbol: 'POW.TO' });
+        expect(data.companyName).toBe('Power Corporation of Canada');
     });
 });
