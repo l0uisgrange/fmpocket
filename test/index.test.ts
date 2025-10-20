@@ -17,15 +17,20 @@ describe('test endpoints', () => {
         expect(data[0].symbol).toBe('MSFT');
     });
     it('search', async () => {
-        let [data] = await fmpocket.search({ query: 'MSFT', by: "symbol" });
+        let [data] = await fmpocket.search({ query: 'MSFT', by: 'symbol' });
         expect(data.name).toBe('Microsoft Corporation');
     });
     it('intradayChart', async () => {
-        let [data] = await fmpocket.intradayChart({ symbol: 'MSFT', from: new Date("2025-10-10"), to: new Date("2025-10-20"), interval: "4hour" });
+        let [data] = await fmpocket.intradayChart({
+            symbol: 'MSFT',
+            from: new Date('2025-10-10'),
+            to: new Date('2025-10-20'),
+            interval: '4hour',
+        });
         expect(data.volume).toBeGreaterThan(0);
     });
     it('fullChart', async () => {
-        let [data] = await fmpocket.fullChart({ symbol: 'USDCHF', from: new Date("2025-10-10"), to: new Date("2025-10-20") });
+        let [data] = await fmpocket.fullChart({ symbol: 'USDCHF', from: new Date('2025-10-10'), to: new Date('2025-10-20') });
         expect(data.volume).toBeGreaterThan(0);
     });
     it('companyProfile', async () => {
