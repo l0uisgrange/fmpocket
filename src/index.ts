@@ -1,16 +1,20 @@
 import { z } from 'zod';
 import {
-    companyProfileSchema, cryptoListSchema,
+    commoditiesListSchema,
+    companyProfileSchema,
+    cryptoListSchema,
     employeeCount,
     forexListSchema,
     fullChartSchema,
+    holidaysSchema,
     intradayChartSchema,
     lightChartSchema,
     marketCap,
-    MarketCapData,
+    marketHoursSchema,
     quoteSchema,
     searchSchema,
     shortQuoteSchema,
+    stockListSchema,
 } from './schemas.js';
 import { formatDay } from './format.js';
 
@@ -201,6 +205,13 @@ export class FMPocketClient {
     }
 
     /**
+     * Access a comprehensive list of all stocks traded on exchanges worldwide.
+     */
+    async listStock() {
+        return this.#callEndpoint('/index-list', stockListSchema, {});
+    }
+
+    /**
      * Access a comprehensive list of all cryptocurrencies traded on exchanges worldwide.
      */
     async listCrypto() {
@@ -212,6 +223,27 @@ export class FMPocketClient {
      */
     async listForex() {
         return this.#callEndpoint('/forex-list', forexListSchema, {});
+    }
+
+    /**
+     * Access an extensive list of tracked commodities across various sectors.
+     */
+    async listCommodities() {
+        return this.#callEndpoint('/commodities-list', commoditiesListSchema, {});
+    }
+
+    /**
+     * Retrieve trading hours for specific stock exchanges.
+     */
+    async marketHours(exchange: string) {
+        return this.#callEndpoint('/exchange-market-hours', marketHoursSchema, { exchange });
+    }
+
+    /**
+     * Retrieve holidays for specific stock exchanges.
+     */
+    async holidays(exchange: string) {
+        return this.#callEndpoint('/holidays-by-exchange', holidaysSchema, { exchange });
     }
 }
 

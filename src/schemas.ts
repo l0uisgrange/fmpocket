@@ -139,7 +139,14 @@ export const marketCap = z.array(
     }),
 );
 
-export type MarketCapData = z.output<typeof marketCap>;
+export const stockListSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        name: z.string(),
+        exchange: z.string(),
+        currency: z.string(),
+    }),
+);
 
 export const cryptoListSchema = z.array(
     z.object({
@@ -159,5 +166,37 @@ export const forexListSchema = z.array(
         fromName: z.string(),
         toCurrency: z.string(),
         toName: z.string(),
+    }),
+);
+
+export const commoditiesListSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        name: z.string(),
+        exchange: z.string().nullable(),
+        tradeMonth: z.string(),
+        currency: z.string(),
+    }),
+);
+
+export const marketHoursSchema = z.array(
+    z.object({
+        exchange: z.string(),
+        name: z.string(),
+        openingHour: z.string(),
+        closingHour: z.string(),
+        timezone: z.string(),
+        isMarketOpen: z.boolean(),
+    }),
+);
+
+export const holidaysSchema = z.array(
+    z.object({
+        exchange: z.string(),
+        date: z.coerce.date(),
+        name: z.string(),
+        isClosed: z.boolean().nullable(),
+        adjOpenTime: z.string().nullable(),
+        adjCloseTime: z.string().nullable(),
     }),
 );
