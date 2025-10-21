@@ -51,3 +51,5 @@ This is the list of currently supported endpoints. If yours is not in this list,
 | `listCommodities()`                             | `/commodities-list`            |
 | `marketHours(exchange)`                         | `/exchange-market-hours`       |
 | `holidays(exchange)`                            | `/holidays-by-exchange`        |
+| `keyMetrics({ symbol, limit, period })`         | `/key-metrics`                 |
+| `ratio({ symbol, limit, period })`              | `/ratio`                       |

@@ -8,10 +8,12 @@ import {
     fullChartSchema,
     holidaysSchema,
     intradayChartSchema,
+    keyMetricsSchema,
     lightChartSchema,
     marketCap,
     marketHoursSchema,
     quoteSchema,
+    ratiosSchema,
     searchSchema,
     shortQuoteSchema,
     stockListSchema,
@@ -244,6 +246,36 @@ export class FMPocketClient {
      */
     async holidays(exchange: string) {
         return this.#callEndpoint('/holidays-by-exchange', holidaysSchema, { exchange });
+    }
+
+    /**
+     * Access essential financial metrics for a company.
+     */
+    async keyMetrics({
+        symbol,
+        limit,
+        period,
+    }: {
+        symbol: string;
+        limit?: number;
+        period?: 'Q1' | 'Q2' | 'Q3' | 'Q4' | 'FY' | 'annual' | 'quarter';
+    }) {
+        return this.#callEndpoint('/key-metrics', keyMetricsSchema, { symbol, limit, period });
+    }
+
+    /**
+     * Analyze a company's financial performance.
+     */
+    async ratios({
+        symbol,
+        limit,
+        period,
+    }: {
+        symbol: string;
+        limit?: number;
+        period?: 'Q1' | 'Q2' | 'Q3' | 'Q4' | 'FY' | 'annual' | 'quarter';
+    }) {
+        return this.#callEndpoint('/ratios', ratiosSchema, { symbol, limit, period });
     }
 }
 

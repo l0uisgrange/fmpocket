@@ -69,4 +69,12 @@ describe('test endpoints', () => {
         let [data] = await fmpocket.holidays('NASDAQ');
         expect(data.exchange).toBe('NASDAQ');
     });
+    it('keyMetrics', async () => {
+        let [data] = await fmpocket.keyMetrics({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
+    it('ratios', async () => {
+        let [data] = await fmpocket.ratios({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
 });
