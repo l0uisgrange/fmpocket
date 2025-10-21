@@ -4,6 +4,17 @@
 
 [Report a bug](https://github.com/l0uisgrange/fmpocket/issues) — [Forum](https://github.com/l0uisgrange/fmpocket/discussions/categories/q-a)
 
+## Installation
+
+```sh
+npm install fmpocket
+# or
+pnpm install fmpocket
+# or
+deno install npm:fmpocket
+# ...
+```
+
 ## Quick usage
 
 ```typescript
@@ -17,7 +28,7 @@ console.log(data.volume);
 
 ## Options
 
-The constructor supports the following options.
+The `FMPocket` constructor supports the following options.
 
 | Option     | Description                      | Default                              |
 | :--------- | :------------------------------- | :----------------------------------- |
