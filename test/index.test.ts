@@ -7,6 +7,11 @@ const KEY = process.env.VITE_TEST_KEY;
 const fmpocket = FMPocket({ key: KEY, debug: true });
 
 describe('test endpoints', () => {
+    it('any', async () => {
+        let data = await fmpocket.any('/quote', null, { symbol: 'MSFT' });
+        // @ts-ignore
+        expect(data[0].name).toBe('Microsoft Corporation');
+    });
     it('quote', async () => {
         let [data] = await fmpocket.quote('MSFT');
         expect(data.name).toBe('Microsoft Corporation');

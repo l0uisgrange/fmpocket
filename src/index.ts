@@ -59,16 +59,23 @@ export class FMPocketClient {
     /**
      * Executes a generic HTTP call to the FMP API.
      */
-    async #callEndpoint<T>(endpoint: string, schema: z.ZodSchema<T>, params = {}) {
+    async #callEndpoint<T>(endpoint: string, schema: z.ZodSchema<T> | null, params = {}) {
         const url = this.#buildUrl(endpoint, params);
         const response = await fetch(url, { signal: this.#timeout ? AbortSignal.timeout(this.#timeout) : undefined });
         if (!response.ok) throw new Error(`FMPocket HTTP Error ${response.status} for ${endpoint}`);
         const rawData: T = await response.json();
-        if (this.#validate) {
+        if (schema && this.#validate) {
             return schema.parse(rawData);
         } else {
             return rawData;
         }
+    }
+
+    /**
+     * Executes a call to an unsupported endpoint.
+     */
+    async any(endpoint: string, schema: z.ZodSchema | null = z.any(), params: Record<string, any> = {}) {
+        return this.#callEndpoint(endpoint, schema, params);
     }
 
     /**
