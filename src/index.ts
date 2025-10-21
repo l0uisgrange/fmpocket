@@ -1,9 +1,13 @@
 import { z } from 'zod';
 import {
-    companyProfileSchema,
+    companyProfileSchema, cryptoListSchema,
+    employeeCount,
+    forexListSchema,
     fullChartSchema,
     intradayChartSchema,
     lightChartSchema,
+    marketCap,
+    MarketCapData,
     quoteSchema,
     searchSchema,
     shortQuoteSchema,
@@ -153,7 +157,7 @@ export class FMPocketClient {
     }
 
     /**
-     * Retrieves the detailed information given a company's symbol.
+     * Access detailed company profile data.
      */
     async companyProfile({ cik, symbol }: { symbol: string; cik?: never } | { cik: string; symbol?: never }) {
         if (!cik && !symbol) throw new Error('Symbol or CIK is required for companyProfile.');
@@ -162,6 +166,52 @@ export class FMPocketClient {
         } else {
             return this.#callEndpoint('/profile-cik', companyProfileSchema, { cik });
         }
+    }
+
+    /**
+     * Retrieve detailed workforce information for companies, including employee count, reporting period, and filing date.
+     */
+    async employeeCount({ symbol, limit }: { symbol: string; limit?: number }) {
+        if (!symbol) throw new Error('Symbol is required for employeeCount.');
+        return this.#callEndpoint('/employee-count', employeeCount, { symbol, limit });
+    }
+
+    /**
+     * Access historical employee count data for a company based on specific reporting periods.
+     */
+    async employeeHistoryCount({ symbol, limit }: { symbol: string; limit?: number }) {
+        if (!symbol) throw new Error('Symbol is required for employeeHistoryCount.');
+        return this.#callEndpoint('/historical-employee-count', employeeCount, { symbol, limit });
+    }
+
+    /**
+     * Retrieve the market capitalization for a specific company on any given date.
+     */
+    async marketCap({ symbol, limit }: { symbol: string; limit?: number }) {
+        if (!symbol) throw new Error('Symbol is required for employeeHistoryCount.');
+        return this.#callEndpoint('/market-capitalization', marketCap, { symbol, limit });
+    }
+
+    /**
+     * Retrieve market capitalization data for multiple companies in a single request.
+     */
+    async batchMarketCap(symbols: string[]) {
+        if (!symbols) throw new Error('Symbols are required for batchMarketCap.');
+        return this.#callEndpoint('/market-capitalization-batch', marketCap, { symbols: symbols.join(',') });
+    }
+
+    /**
+     * Access a comprehensive list of all cryptocurrencies traded on exchanges worldwide.
+     */
+    async listCrypto() {
+        return this.#callEndpoint('/cryptocurrency-list', cryptoListSchema, {});
+    }
+
+    /**
+     * Access a comprehensive list of all currency pairs traded on the forex market.
+     */
+    async listForex() {
+        return this.#callEndpoint('/forex-list', forexListSchema, {});
     }
 }
 

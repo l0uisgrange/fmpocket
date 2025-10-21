@@ -37,4 +37,20 @@ describe('test endpoints', () => {
         let [data] = await fmpocket.companyProfile({ symbol: 'POW.TO' });
         expect(data.companyName).toBe('Power Corporation of Canada');
     });
+    it('employeeCount', async () => {
+        let [data] = await fmpocket.employeeCount({ symbol: 'AAPL' });
+        expect(data.symbol).toBe('AAPL');
+    });
+    it('marketCap', async () => {
+        let [data] = await fmpocket.marketCap({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
+    it('listForex', async () => {
+        let data = await fmpocket.listForex();
+        expect(data.length).toBeGreaterThan(0);
+    });
+    it('listCrypto', async () => {
+        let data = await fmpocket.listCrypto();
+        expect(data.length).toBeGreaterThan(0);
+    });
 });

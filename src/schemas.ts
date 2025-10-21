@@ -116,3 +116,48 @@ export const companyProfileSchema = z.array(
         isFund: z.boolean(),
     }),
 );
+
+export const employeeCount = z.array(
+    z.object({
+        symbol: z.string(),
+        cik: z.string(),
+        acceptanceTime: z.coerce.date(),
+        periodOfReport: z.coerce.date(),
+        companyName: z.string(),
+        formType: z.string(),
+        filingDate: z.coerce.date(),
+        employeeCount: z.number(),
+        source: z.url(),
+    }),
+);
+
+export const marketCap = z.array(
+    z.object({
+        symbol: z.string(),
+        date: z.coerce.date(),
+        marketCap: z.number(),
+    }),
+);
+
+export type MarketCapData = z.output<typeof marketCap>;
+
+export const cryptoListSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        name: z.string(),
+        exchange: z.string(),
+        icoDate: z.coerce.date(),
+        circulatingSupply: z.number().nullable(),
+        totalSupply: z.number().nullable(),
+    }),
+);
+
+export const forexListSchema = z.array(
+    z.object({
+        symbol: z.string(),
+        fromCurrency: z.string(),
+        fromName: z.string(),
+        toCurrency: z.string(),
+        toName: z.string(),
+    }),
+);
