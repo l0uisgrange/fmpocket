@@ -1,6 +1,6 @@
 # FMPocket
 
-**FMPocket** 💶 is a universal client for the Financial Modeling Prep (FMP) API 🌎, built with Typescript support and works seamlessly across Node, Deno, and Bun. Gets your financial data perfectly formatted ⭐️.
+**FMPocket** 💶 is a lightweight 🪶 universal client for the Financial Modeling Prep (FMP) API 🌎, built with Typescript support and works seamlessly across Node, Deno, and Bun. Gets your financial data perfectly formatted ⭐️.
 
 [Report a bug](https://github.com/l0uisgrange/fmpocket/issues) — [Forum](https://github.com/l0uisgrange/fmpocket/discussions/categories/q-a)
 
@@ -19,12 +19,14 @@ console.log(data.volume);
 
 The constructor supports the following options.
 
-| Option     | Description                     | Default                              |
-| :--------- | :------------------------------ | :----------------------------------- |
-| `key`      | Your API secret key             | _None_ (required)                    |
-| `baseUrl`  | The base endpoint URL           | `https://financialmodelingprep.com/` |
-| `version`  | The API version                 | `stable`                             |
-| `validate` | Validates JSON and coerces data | `true`                               |
+| Option     | Description                      | Default                              |
+| :--------- | :------------------------------- | :----------------------------------- |
+| `key`      | Your API secret key              | _None_ (required)                    |
+| `baseUrl`  | The base endpoint URL            | `https://financialmodelingprep.com/` |
+| `version`  | The API version                  | `stable`                             |
+| `validate` | Validates JSON and coerces data  | `true`                               |
+| `debug`    | Logs the URL before the request  | `false`                              |
+| `timeout`  | Requests timeout in milliseconds | `null`                               |
 
 ## Supported endpoints
 
@@ -52,4 +54,4 @@ This is the list of currently supported endpoints. If yours is not in this list,
 | `marketHours(exchange)`                         | `/exchange-market-hours`       |
 | `holidays(exchange)`                            | `/holidays-by-exchange`        |
 | `keyMetrics({ symbol, limit, period })`         | `/key-metrics`                 |
-| `ratio({ symbol, limit, period })`              | `/ratio`                       |
+| `ratios({ symbol, limit, period })`             | `/ratios`                      |

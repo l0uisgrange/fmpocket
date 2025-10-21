@@ -26,17 +26,19 @@ export class FMPocketClient {
     #version: string = 'stable';
     #validate: boolean = true;
     #debug: boolean = false;
+    #timeout: number | null = null;
 
     /**
      * Internal method to set the API key. Called by the exported setup function.
      */
-    setup({ key, baseUrl, version, validate, debug }: FMPocketOptions) {
+    setup({ key, baseUrl, version, validate, debug, timeout }: FMPocketOptions) {
         if (!key) throw new Error('FMP_API key must be provided.');
         this.#apiKey = key;
         if (baseUrl !== undefined) this.#baseUrl = baseUrl;
         if (version !== undefined) this.#version = version;
         if (validate !== undefined) this.#validate = validate;
         if (debug !== undefined) this.#debug = debug;
+        if (timeout !== undefined) this.#timeout = timeout;
     }
 
     /**
@@ -57,16 +59,23 @@ export class FMPocketClient {
     /**
      * Executes a generic HTTP call to the FMP API.
      */
-    async #callEndpoint<T>(endpoint: string, schema: z.ZodSchema<T>, params = {}) {
+    async #callEndpoint<T>(endpoint: string, schema: z.ZodSchema<T> | null, params = {}) {
         const url = this.#buildUrl(endpoint, params);
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: this.#timeout ? AbortSignal.timeout(this.#timeout) : undefined });
         if (!response.ok) throw new Error(`FMPocket HTTP Error ${response.status} for ${endpoint}`);
         const rawData: T = await response.json();
-        if (this.#validate) {
+        if (schema && this.#validate) {
             return schema.parse(rawData);
         } else {
             return rawData;
         }
+    }
+
+    /**
+     * Executes a call to an unsupported endpoint.
+     */
+    async any(endpoint: string, schema: z.ZodSchema | null = z.any(), params: Record<string, any> = {}) {
+        return this.#callEndpoint(endpoint, schema, params);
     }
 
     /**
@@ -287,6 +296,7 @@ export interface FMPocketOptions {
     version?: 'stable';
     validate?: boolean;
     debug?: boolean;
+    timeout?: number | null;
 }
 
 export function FMPocket(params: FMPocketOptions) {
