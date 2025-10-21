@@ -10,8 +10,8 @@
 
 - Description: clearly describe the solution and changes brought by the PR.
 - Title: name your PR in **lowercase** using one of the following conventional prefixes:
-    * `feat:` (for a new feature)
-    * `fix:` (for a bug fix)
-    * `chore:` (for maintenance, tooling, or non-code changes)
+    - `feat:` (for a new feature)
+    - `fix:` (for a bug fix)
+    - `chore:` (for maintenance, tooling, or non-code changes)
 
-  **Example:** `feat: add user authentication module`
+    **Example:** `feat: add user authentication module`
