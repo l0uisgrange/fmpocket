@@ -60,6 +60,10 @@ let [data] = await fmpocket.priceChange('AAPL');
 let data = await fmpocket.batchQuote(['AAPL', 'EURUSD', 'BTCUSD']);
 // Batch short quote
 let data = await fmpocket.batchShortQuote(['AAPL', 'EURUSD', 'BTCUSD']);
+// Batch aftermarket trade
+let data = await fmpocket.batchAftermarketTrade(['AAPL', 'MSFT']);
+// Batch aftermarket quote
+let data = await fmpocket.batchAftermarketQuote(['AAPL', 'MSFT']);
 ```
 
 ### Historical price
@@ -106,10 +110,41 @@ let data = await fmpocket.batchMarketCap('AAPL');
 ### Financial statements
 
 ```ts
+// Income statement
+let [data] = await fmpocket.income({ symbol: 'POW.TO', period: 'Q3' });
+// Balance sheet statement
+let [data] = await fmpocket.balanceSheet({ symbol: 'POW.TO', period: 'Q3' });
+// Cash flow statement
+let [data] = await fmpocket.cashFlow({ symbol: 'POW.TO', period: 'Q3' });
+// Latest statements
+let data = await fmpocket.latest({ page: 2, limit: 10 });
 // Key metrics
 let [data] = await fmpocket.keyMetrics({ symbol: 'POW.TO', period: 'Q3' });
 // Financial ratios
 let [data] = await fmpocket.ratios({ symbol: 'POW.TO', period: 'Q3' });
+```
+
+### Technical indicators
+
+```ts
+// Simple moving average
+let data = await fmpocket.sma({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Exponential moving average
+let data = await fmpocket.ema({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Weighted moving average
+let data = await fmpocket.wma({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Double exponential moving average
+let data = await fmpocket.dema({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Triple exponential moving average
+let data = await fmpocket.tema({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Relative strength index
+let data = await fmpocket.rsi({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Standard deviation
+let data = await fmpocket.std({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Williams
+let data = await fmpocket.williams({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
+// Average directional index
+let data = await fmpocket.adx({ symbol: 'AAPL', periodLength: 20, timeframe: '1min' });
 ```
 
 ### List
