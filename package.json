@@ -1,7 +1,7 @@
 {
     "name": "fmpocket",
-    "version": "1.1.0",
-    "description": "FMPocket is a universal typed dependency-free client for the Financial Modeling Prep (FMP) API, built on standard `fetch` for seamless use across Node, Deno, Bun, and the browser. Gets your financial data perfectly formatted.",
+    "version": "1.2.0",
+    "description": "A lightweight universal typed client for the Financial Modeling Prep (FMP) API. Gets your financial data perfectly formatted.",
     "author": {
         "name": "Louis Grange",
         "url": "https://github.com/l0uisgrange"
