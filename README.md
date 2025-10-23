@@ -20,7 +20,7 @@ deno install npm:fmpocket
 ```ts
 import { FMPocket } from 'fmpocket';
 
-const fmpocket = FMPocket({ key: process.env.API_KEY });
+const fmpocket = FMPocket({ key: process.env.API_KEY! });
 
 let [data] = await fmpocket.quote('AAPL');
 console.log(data.volume);
