@@ -40,6 +40,18 @@ export const lightChartSchema = z.array(
     }),
 );
 
+export const unadjustedSchema = z.array(
+    z.object({
+        symbol: z.coerce.string(),
+        date: z.coerce.date(),
+        adjOpen: z.coerce.number(),
+        adjHigh: z.coerce.number(),
+        adjLow: z.coerce.number(),
+        adjClose: z.coerce.number(),
+        volume: z.coerce.number(),
+    }),
+);
+
 export const fullChartSchema = z.array(
     z.object({
         symbol: z.coerce.string(),
@@ -498,5 +510,43 @@ export const incomeSchema = z.array(
         epsDiluted: z.coerce.number(),
         weightedAverageShsOut: z.coerce.number(),
         weightedAverageShsOutDil: z.coerce.number(),
+    }),
+);
+
+export const aftermarketTradeSchema = z.array(
+    z.object({
+        symbol: z.coerce.string(),
+        price: z.coerce.number(),
+        tradeSize: z.coerce.number(),
+        timestamp: z.coerce.number(),
+    }),
+);
+
+export const aftermarketQuoteSchema = z.array(
+    z.object({
+        symbol: z.coerce.string(),
+        bidSize: z.coerce.number(),
+        bidPrice: z.coerce.number(),
+        askSize: z.coerce.number(),
+        askPrice: z.coerce.number(),
+        volume: z.coerce.number(),
+        timestamp: z.coerce.number(),
+    }),
+);
+
+export const changeSchema = z.array(
+    z.object({
+        symbol: z.coerce.string(),
+        '1D': z.coerce.number(),
+        '5D': z.coerce.number(),
+        '1M': z.coerce.number(),
+        '3M': z.coerce.number(),
+        '6M': z.coerce.number(),
+        ytd: z.coerce.number(),
+        '1Y': z.coerce.number(),
+        '3Y': z.coerce.number(),
+        '5Y': z.coerce.number(),
+        '10Y': z.coerce.number(),
+        max: z.coerce.number(),
     }),
 );

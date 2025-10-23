@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import {
+    aftermarketQuoteSchema,
+    aftermarketTradeSchema,
     balanceSheetSchema,
     cashFlowSchema,
+    changeSchema,
     commoditiesListSchema,
     companyProfileSchema,
     cryptoListSchema,
@@ -21,7 +24,7 @@ import {
     ratiosSchema,
     searchSchema,
     shortQuoteSchema,
-    stockListSchema,
+    stockListSchema, unadjustedSchema,
 } from './schemas.js';
 import { formatDay } from './format.js';
 import { Indicator, Interval, Period } from './types.js';
@@ -113,10 +116,68 @@ export class FMPocketClient {
     }
 
     /**
+     * Access real-time aftermarket quotes for stocks.
+     */
+    async aftermarketQuote(symbol: string) {
+        return this.#callEndpoint('/aftermarket-quote', aftermarketQuoteSchema, { symbol });
+    }
+
+    /**
+     * Track real-time trading activity occurring after regular market hours.
+     */
+    async aftermarketTrade(symbol: string) {
+        return this.#callEndpoint('/aftermarket-trade', aftermarketTradeSchema, { symbol });
+    }
+
+
+    /**
+     * Retrieve real-time aftermarket quotes for multiple stocks.
+     */
+    async batchAftermarketQuote(symbols: string[]) {
+        return this.#callEndpoint('/batch-aftermarket-quote', aftermarketQuoteSchema, { symbols: symbols.join(',') });
+    }
+
+    /**
+     * Retrieve real-time aftermarket trading data for multiple stocks.
+     */
+    async batchAftermarketTrade(symbols: string[]) {
+        return this.#callEndpoint('/batch-aftermarket-trade', aftermarketTradeSchema, { symbols: symbols.join(',') });
+    }
+
+    /**
+     * Track stock price fluctuations in real-time.
+     */
+    async priceChange(symbol: string) {
+        return this.#callEndpoint('/stock-price-change', changeSchema, { symbol });
+    }
+
+    /**
      * Retrieves the light chart data for a single stock/forex/crypto symbols between two dates.
      */
     async lightChart(params: { symbol: string; from?: Date | string; to?: Date | string }) {
         return this.#callEndpoint('/historical-price-eod/light', lightChartSchema, {
+            ...params,
+            from: formatDay(params.from),
+            to: formatDay(params.to),
+        });
+    }
+
+    /**
+     * Access stock price and volume data without adjustments for stock splits.
+     */
+    async unadjustedChart(params: { symbol: string; from?: Date | string; to?: Date | string }) {
+        return this.#callEndpoint('/historical-price-eod/non-split-adjusted', unadjustedSchema, {
+            ...params,
+            from: formatDay(params.from),
+            to: formatDay(params.to),
+        });
+    }
+
+    /**
+     * Analyze stock performance with dividend adjustments.
+     */
+    async dividendChart(params: { symbol: string; from?: Date | string; to?: Date | string }) {
+        return this.#callEndpoint('/historical-price-eod/dividend-adjusted', unadjustedSchema, {
             ...params,
             from: formatDay(params.from),
             to: formatDay(params.to),
@@ -160,7 +221,7 @@ export class FMPocketClient {
     }
 
     /**
-     * Searches symbols based on text and filters
+     * Searches symbols based on text and filters.
      */
     async search({ query, limit, exchange, by = 'name' }: { query: string; by?: 'name' | 'symbol'; limit?: number; exchange?: string }) {
         if (!query) return [];
@@ -268,7 +329,7 @@ export class FMPocketClient {
     }
 
     /**
-     * Calls a technical indicator endpoint
+     * Calls a technical indicator endpoint.
      */
     async #indicator({ indicator, ...params }: IndicatorsParams & { indicator: Indicator }) {
         return this.#callEndpoint(
@@ -283,91 +344,91 @@ export class FMPocketClient {
     }
 
     /**
-     * Simple moving average technical indicator
+     * Simple moving average technical indicator.
      */
     async sma(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'sma' });
     }
 
     /**
-     * Exponential moving average technical indicator
+     * Exponential moving average technical indicator.
      */
     async ema(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'ema' });
     }
 
     /**
-     * Weighted moving average technical indicator
+     * Weighted moving average technical indicator.
      */
     async wma(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'wma' });
     }
 
     /**
-     * Double exponential moving average technical indicator
+     * Double exponential moving average technical indicator.
      */
     async dema(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'dema' });
     }
 
     /**
-     * Triple exponential moving average technical indicator
+     * Triple exponential moving average technical indicator.
      */
     async tema(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'tema' });
     }
 
     /**
-     * Relative strength index technical indicator
+     * Relative strength index technical indicator.
      */
     async rsi(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'rsi' });
     }
 
     /**
-     * Standard deviation technical indicator
+     * Standard deviation technical indicator.
      */
     async std(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'standardDeviation' });
     }
 
     /**
-     * Williams technical indicator
+     * Williams technical indicator.
      */
     async williams(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'williams' });
     }
 
     /**
-     * Average directional index technical indicator
+     * Average directional index technical indicator.
      */
     async adx(params: IndicatorsParams) {
         return this.#indicator({ ...params, indicator: 'adx' });
     }
 
     /**
-     * Retrieves latest financial statements
+     * Retrieves latest financial statements.
      */
     async latest(params: { page?: number; limit?: number }) {
         return this.#callEndpoint('/latest-financial-statements', latestSchema, params);
     }
 
     /**
-     * Access detailed income statement data for publicly traded companies
+     * Access detailed income statement data for publicly traded companies.
      */
     async income(params: { symbol: string; limit?: number; period?: Period }) {
         return this.#callEndpoint('/income-statement', incomeSchema, params);
     }
 
     /**
-     * Access detailed balance sheet statements for publicly traded companies
+     * Access detailed balance sheet statements for publicly traded companies.
      */
     async balanceSheet(params: { symbol: string; limit?: number; period?: Period }) {
         return this.#callEndpoint('/balance-sheet-statement', balanceSheetSchema, params);
     }
 
     /**
-     * Gain insights into a company's cash flow activities
+     * Gain insights into a company's cash flow activities.
      */
     async cashFlow(params: { symbol: string; limit?: number; period?: Period }) {
         return this.#callEndpoint('/cash-flow-statement', cashFlowSchema, params);
