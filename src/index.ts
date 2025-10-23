@@ -24,7 +24,8 @@ import {
     ratiosSchema,
     searchSchema,
     shortQuoteSchema,
-    stockListSchema, unadjustedSchema,
+    stockListSchema,
+    unadjustedSchema,
 } from './schemas.js';
 import { formatDay } from './format.js';
 import { Indicator, Interval, Period } from './types.js';
@@ -128,7 +129,6 @@ export class FMPocketClient {
     async aftermarketTrade(symbol: string) {
         return this.#callEndpoint('/aftermarket-trade', aftermarketTradeSchema, { symbol });
     }
-
 
     /**
      * Retrieve real-time aftermarket quotes for multiple stocks.
