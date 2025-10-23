@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import {
+    balanceSheetSchema,
+    cashFlowSchema,
     commoditiesListSchema,
     companyProfileSchema,
     cryptoListSchema,
@@ -7,6 +9,7 @@ import {
     forexListSchema,
     fullChartSchema,
     holidaysSchema,
+    incomeSchema,
     indicatorSchema,
     intradayChartSchema,
     keyMetricsSchema,
@@ -353,21 +356,21 @@ export class FMPocketClient {
      * Access detailed income statement data for publicly traded companies
      */
     async income(params: { symbol: string; limit?: number; period?: Period }) {
-        return this.#callEndpoint('/income-statement', latestSchema, params);
+        return this.#callEndpoint('/income-statement', incomeSchema, params);
     }
 
     /**
      * Access detailed balance sheet statements for publicly traded companies
      */
     async balanceSheet(params: { symbol: string; limit?: number; period?: Period }) {
-        return this.#callEndpoint('/balance-sheet-statement', latestSchema, params);
+        return this.#callEndpoint('/balance-sheet-statement', balanceSheetSchema, params);
     }
 
     /**
      * Gain insights into a company's cash flow activities
      */
     async cashFlow(params: { symbol: string; limit?: number; period?: Period }) {
-        return this.#callEndpoint('/cash-flow-statement', latestSchema, params);
+        return this.#callEndpoint('/cash-flow-statement', cashFlowSchema, params);
     }
 }
 
