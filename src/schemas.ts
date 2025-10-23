@@ -345,7 +345,7 @@ export const indicatorSchema = z.object({
 export const latestSchema = z.array(
     z.object({
         symbol: z.coerce.string(),
-        calendarYear: z.coerce.number(),
+        calendarYear: z.coerce.string(),
         period: z.coerce.string(),
         date: z.coerce.date(),
         dateAdded: z.coerce.date(),

@@ -82,4 +82,32 @@ describe('test endpoints', () => {
         let [data] = await fmpocket.ratios({ symbol: 'POW.TO' });
         expect(data.symbol).toBe('POW.TO');
     });
+    it('cashFlow', async () => {
+        let [data] = await fmpocket.cashFlow({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
+    it('balanceSheet', async () => {
+        let [data] = await fmpocket.balanceSheet({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
+    it('income', async () => {
+        let [data] = await fmpocket.income({ symbol: 'POW.TO' });
+        expect(data.symbol).toBe('POW.TO');
+    });
+    it('latest', async () => {
+        let data = await fmpocket.latest({ page: 1 });
+        expect(data.length).toBeGreaterThan(0);
+    });
+    it('williams', async () => {
+        let data = await fmpocket.williams({ symbol: 'AAPL', periodLength: 10, timeframe: '15min' });
+        expect(data.length).toBeGreaterThan(0);
+    });
+    it('batchAftermarketQuote', async () => {
+        let data = await fmpocket.batchAftermarketQuote(['AAPL', 'MSFT']);
+        expect(data.length).toBeGreaterThan(0);
+    });
+    it('priceChange', async () => {
+        let [data] = await fmpocket.priceChange('MSFT');
+        expect(data.symbol).toBe('MSFT');
+    });
 });
