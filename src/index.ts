@@ -7,8 +7,10 @@ import {
     forexListSchema,
     fullChartSchema,
     holidaysSchema,
+    indicatorSchema,
     intradayChartSchema,
     keyMetricsSchema,
+    latestSchema,
     lightChartSchema,
     marketCap,
     marketHoursSchema,
@@ -19,6 +21,7 @@ import {
     stockListSchema,
 } from './schemas.js';
 import { formatDay } from './format.js';
+import { Indicator, Interval, Period } from './types.js';
 
 export class FMPocketClient {
     #apiKey: string = '';
@@ -82,7 +85,6 @@ export class FMPocketClient {
      * Retrieves the current quote for a single stock/forex/crypto symbol.
      */
     async quote(symbol: string) {
-        if (!symbol) throw new Error('Symbol is required for getQuote.');
         return this.#callEndpoint(`/quote`, quoteSchema, { symbol });
     }
 
@@ -90,7 +92,6 @@ export class FMPocketClient {
      * Retrieves the current short quote for a single stock/forex/crypto symbol.
      */
     async shortQuote(symbol: string) {
-        if (!symbol) throw new Error('Symbol is required for getShortQuote.');
         return this.#callEndpoint(`/quote-short`, shortQuoteSchema, { symbol });
     }
 
@@ -98,7 +99,6 @@ export class FMPocketClient {
      * Retrieves the current short quotes for multiple stock/forex/crypto symbols.
      */
     async batchQuote(symbols: string[]) {
-        if (!symbols) throw new Error('Symbol is required for getBatchQuote.');
         return this.#callEndpoint('/batch-quote', quoteSchema, { symbols: symbols.join(',') });
     }
 
@@ -106,31 +106,28 @@ export class FMPocketClient {
      * Retrieves the live short quotes for multiple stock/forex/crypto symbols.
      */
     async batchShortQuote(symbols: string[]) {
-        if (!symbols) throw new Error('Symbol is required for getBatchShortQuote.');
         return this.#callEndpoint('/batch-quote-short', shortQuoteSchema, { symbols: symbols.join(',') });
     }
 
     /**
      * Retrieves the light chart data for a single stock/forex/crypto symbols between two dates.
      */
-    async lightChart({ symbol, from, to }: { symbol: string; from?: Date | string; to?: Date | string }) {
-        if (!symbol) throw new Error('Symbol is required for lightChart.');
+    async lightChart(params: { symbol: string; from?: Date | string; to?: Date | string }) {
         return this.#callEndpoint('/historical-price-eod/light', lightChartSchema, {
-            symbol,
-            from: formatDay(from),
-            to: formatDay(to),
+            ...params,
+            from: formatDay(params.from),
+            to: formatDay(params.to),
         });
     }
 
     /**
      * Retrieves the full chart data for a single stock/forex/crypto symbols between two dates.
      */
-    async fullChart({ symbol, from, to }: { symbol: string; from?: Date | string; to?: Date | string }) {
-        if (!symbol) throw new Error('Symbol is required for fullChart.');
+    async fullChart(params: { symbol: string; from?: Date | string; to?: Date | string }) {
         return this.#callEndpoint('/historical-price-eod/full', fullChartSchema, {
-            symbol,
-            from: formatDay(from),
-            to: formatDay(to),
+            ...params,
+            from: formatDay(params.from),
+            to: formatDay(params.to),
         });
     }
 
@@ -148,7 +145,7 @@ export class FMPocketClient {
         from?: Date | string;
         to?: Date | string;
         nonadjusted?: boolean;
-        interval: '1min' | '5min' | '15min' | '30min' | '1hour' | '4hour';
+        interval: Interval;
     }) {
         if (!symbol) throw new Error('Symbol is required for intradayChart.');
         return this.#callEndpoint(`/historical-chart/${interval}`, intradayChartSchema, {
@@ -186,32 +183,28 @@ export class FMPocketClient {
     /**
      * Retrieve detailed workforce information for companies, including employee count, reporting period, and filing date.
      */
-    async employeeCount({ symbol, limit }: { symbol: string; limit?: number }) {
-        if (!symbol) throw new Error('Symbol is required for employeeCount.');
-        return this.#callEndpoint('/employee-count', employeeCount, { symbol, limit });
+    async employeeCount(params: { symbol: string; limit?: number }) {
+        return this.#callEndpoint('/employee-count', employeeCount, params);
     }
 
     /**
      * Access historical employee count data for a company based on specific reporting periods.
      */
-    async employeeHistoryCount({ symbol, limit }: { symbol: string; limit?: number }) {
-        if (!symbol) throw new Error('Symbol is required for employeeHistoryCount.');
-        return this.#callEndpoint('/historical-employee-count', employeeCount, { symbol, limit });
+    async employeeHistoryCount(params: { symbol: string; limit?: number }) {
+        return this.#callEndpoint('/historical-employee-count', employeeCount, params);
     }
 
     /**
      * Retrieve the market capitalization for a specific company on any given date.
      */
-    async marketCap({ symbol, limit }: { symbol: string; limit?: number }) {
-        if (!symbol) throw new Error('Symbol is required for employeeHistoryCount.');
-        return this.#callEndpoint('/market-capitalization', marketCap, { symbol, limit });
+    async marketCap(params: { symbol: string; limit?: number }) {
+        return this.#callEndpoint('/market-capitalization', marketCap, params);
     }
 
     /**
      * Retrieve market capitalization data for multiple companies in a single request.
      */
     async batchMarketCap(symbols: string[]) {
-        if (!symbols) throw new Error('Symbols are required for batchMarketCap.');
         return this.#callEndpoint('/market-capitalization-batch', marketCap, { symbols: symbols.join(',') });
     }
 
@@ -260,31 +253,121 @@ export class FMPocketClient {
     /**
      * Access essential financial metrics for a company.
      */
-    async keyMetrics({
-        symbol,
-        limit,
-        period,
-    }: {
-        symbol: string;
-        limit?: number;
-        period?: 'Q1' | 'Q2' | 'Q3' | 'Q4' | 'FY' | 'annual' | 'quarter';
-    }) {
-        return this.#callEndpoint('/key-metrics', keyMetricsSchema, { symbol, limit, period });
+    async keyMetrics(params: { symbol: string; limit?: number; period?: Period }) {
+        return this.#callEndpoint('/key-metrics', keyMetricsSchema, params);
     }
 
     /**
      * Analyze a company's financial performance.
      */
-    async ratios({
-        symbol,
-        limit,
-        period,
-    }: {
-        symbol: string;
-        limit?: number;
-        period?: 'Q1' | 'Q2' | 'Q3' | 'Q4' | 'FY' | 'annual' | 'quarter';
-    }) {
-        return this.#callEndpoint('/ratios', ratiosSchema, { symbol, limit, period });
+    async ratios(params: { symbol: string; limit?: number; period?: Period }) {
+        return this.#callEndpoint('/ratios', ratiosSchema, params);
+    }
+
+    /**
+     * Calls a technical indicator endpoint
+     */
+    async #indicator({ indicator, ...params }: IndicatorsParams & { indicator: Indicator }) {
+        return this.#callEndpoint(
+            '/technical-indicators/' + indicator.toLowerCase(),
+            z.array(indicatorSchema.extend({ [indicator]: z.coerce.number() })),
+            {
+                ...params,
+                from: formatDay(params.from),
+                to: formatDay(params.to),
+            },
+        );
+    }
+
+    /**
+     * Simple moving average technical indicator
+     */
+    async sma(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'sma' });
+    }
+
+    /**
+     * Exponential moving average technical indicator
+     */
+    async ema(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'ema' });
+    }
+
+    /**
+     * Weighted moving average technical indicator
+     */
+    async wma(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'wma' });
+    }
+
+    /**
+     * Double exponential moving average technical indicator
+     */
+    async dema(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'dema' });
+    }
+
+    /**
+     * Triple exponential moving average technical indicator
+     */
+    async tema(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'tema' });
+    }
+
+    /**
+     * Relative strength index technical indicator
+     */
+    async rsi(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'rsi' });
+    }
+
+    /**
+     * Standard deviation technical indicator
+     */
+    async std(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'standardDeviation' });
+    }
+
+    /**
+     * Williams technical indicator
+     */
+    async williams(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'williams' });
+    }
+
+    /**
+     * Average directional index technical indicator
+     */
+    async adx(params: IndicatorsParams) {
+        return this.#indicator({ ...params, indicator: 'adx' });
+    }
+
+    /**
+     * Retrieves latest financial statements
+     */
+    async latest(params: { page?: number; limit?: number }) {
+        return this.#callEndpoint('/latest-financial-statements', latestSchema, params);
+    }
+
+    /**
+     * Access detailed income statement data for publicly traded companies
+     */
+    async income(params: { symbol: string; limit?: number; period?: Period }) {
+        return this.#callEndpoint('/income-statement', latestSchema, params);
+    }
+
+    /**
+     * Access detailed balance sheet statements for publicly traded companies
+     */
+    async balanceSheet(params: { symbol: string; limit?: number; period?: Period }) {
+        return this.#callEndpoint('/balance-sheet-statement', latestSchema, params);
+    }
+
+    /**
+     * Gain insights into a company's cash flow activities
+     */
+    async cashFlow(params: { symbol: string; limit?: number; period?: Period }) {
+        return this.#callEndpoint('/cash-flow-statement', latestSchema, params);
     }
 }
 
@@ -297,6 +380,14 @@ export interface FMPocketOptions {
     validate?: boolean;
     debug?: boolean;
     timeout?: number | null;
+}
+
+export interface IndicatorsParams {
+    symbol: string;
+    periodLength: number;
+    timeframe: Interval | '1day';
+    from?: string | Date;
+    to?: string | Date;
 }
 
 export function FMPocket(params: FMPocketOptions) {
